@@ -12,7 +12,8 @@ Assignment 2 <br/>
 - assign2.cpp
 - main.cpp
 
-3. If user selects mirror mode, wants to print to a text file, and simulation is infinite, the file doesn't stop after 1000 generations.
+3. No known compile/runtime errors. When printing to console, I purposefully coded it so that the user would see the stabilized generation before
+they are asked to press 'Enter' to quit.
 
 4. References
 - Used to figure out how to press enter key to continue program
@@ -31,7 +32,7 @@ Assignment 2 <br/>
   - https://stackoverflow.com/questions/3273993/how-do-i-validate-user-input-as-a-double-in-c
 - Avoid char input when program expects integer
   - https://stackoverflow.com/questions/11523569/how-can-i-avoid-char-input-for-an-int-variable
-- My dad helped me debug (I was missing a second equal sign for the assignment operator)
+- My dad helped me debug 
 
 5. Instructions for running assignment:
 - g++ *.cpp
