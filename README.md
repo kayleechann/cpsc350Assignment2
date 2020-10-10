@@ -12,7 +12,9 @@ Assignment 2 <br/>
 - assign2.cpp
 - main.cpp
 
-3. No known compile/runtime errors
+3.
+If user selects mirror mode, wants to print to a text file, and simulation is infinite, the file doesn't stop after 1000 generations.
+
 
 4. References
 - Used to figure out how to press enter key to continue program
@@ -27,6 +29,7 @@ Assignment 2 <br/>
   - http://www.cplusplus.com/forum/beginner/30644/
 - Rounding numbers
   - http://www.cplusplus.com/reference/cmath/ceil/
+- My dad helped me debug (I was missing a second equal sign for the assignment operator)
 
 5. Instructions for running assignment:
 - g++ *.cpp
