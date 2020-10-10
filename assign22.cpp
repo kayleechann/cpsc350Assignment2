@@ -1,10 +1,19 @@
+// /*
+// Kaylee Chan
+// 2348244
+// kaychan@chapman.edu
+// CPSC 350-03
+// Assignment 2
+//
+// This assignment uses 2D arrays to model Conway's Game of Life. It implements 3 different modes to calculate boundaries of the grid.
+// */
 // #include "assign2.h"
 // #include <math.h>
 // #include <sstream>
 // #include <cstdlib>
 // #include <limits> //for enter
 // #include <unistd.h>
-//
+// #include <climits>
 //
 // Life::Life(){
 //   genCount= 0;
@@ -32,18 +41,34 @@
 //     if (config.compare("rand") == 0){
 //       cout << "Enter height of grid as an int: " << endl;
 //       cin >> userRow;
+//       while(userRow <= 0 || cin.fail()){
+//         cin.clear(); // clear input buffer to restore cin to a usable state
+//         cin.ignore(INT_MAX, '\n'); // ignore last input
+//         cout << "ERROR! You can only enter an integer for the grid's height " << endl;
+//         cin >> userRow;
+//       }
+//
 //       cout << "Enter width of grid as an int: " << endl;
 //       cin >> userCol;
-//       bool notCorretDens = true;
-//       while(notCorretDens){
-//         cout << "Enter initial population density of the world as a decimal (a number greater than 0 or equal to 1): " << endl;
-//         cin >> userDensity;
-//         if( (userDensity >0) && (userDensity <= 1)){
-//           notCorretDens = false;
-//         }else{
-//           notCorretDens = true;
-//         }
+//       while(userCol <= 0 || cin.fail()){
+//         cin.clear(); // clear input buffer to restore cin to a usable state
+//         cin.ignore(INT_MAX, '\n'); // ignore last input
+//         cout << "ERROR! You can only enter an integer for the grid's width " << endl;
+//         cin >> userCol;
 //       }
+//         cout << "Enter initial population density of the world as a decimal (a number greater than 0 or equal to 1): " << endl;
+//         while (1) {
+//           if (cin >> userDensity && (userDensity >0) && (userDensity <= 1)) {
+//             // valid number
+//             break;
+//         } else {
+//           // not a valid number
+//           cout << "Invalid Input! Please input a decimal number." << endl;
+//           cin.clear();
+//           while (cin.get() != '\n') ; // empty loop
+//           }
+//         }
+//
 //       randomWorld(userRow, userCol, userDensity);
 //       playing = false;
 //     }else if(config.compare("file") == 0){
@@ -75,7 +100,7 @@
 //       doughnutMode(height, width, board);
 //       selecting = false;
 //     }else{
-//       cout << "not an available mode! try entering 'classic', 'mirror', or 'doughnut' " << endl;
+//       cout << "ERROR! Not an available mode! Try entering 'classic', 'mirror', or 'doughnut' " << endl;
 //       cin >> mode;
 //       continue;
 //     }
@@ -112,42 +137,100 @@
 //
 // }
 //
-// void Life::print(int rows, int columns, char**& board, int genCount, string print){
+// bool Life::print(int rows, int columns, char**& board, int genCount, string print, bool fileCounter){
 //   if(printOption == "1"){
 //     sleep(2);
 //     //cout << "print function" << endl;
 //     cout << "Generation: " << genCount << endl;
-//
+//     int same = 0;
 //     for(int i = 0; i< rows; ++i){
 //       for(int j = 0; j < columns; ++j){
 //         cout << board[i][j];
+//         if(board[i][j] == '-'){
+//           same++;
+//         }
 //       }
 //       cout << endl;
 //     }
 //
-//   }else if(printOption == "2"){
-//     string temp;
-//     cout << "Press 'Enter' to continue printing: " << endl;
-//     temp = cin.get();
-//     //cout << "Generation: " << genCount << endl;
-//     // for(int i = 0; i< rows; ++i){
-//     //   for(int j = 0; j < columns; ++j){
-//     //     cout << board[i][j];
-//     //   }
-//     //   cout << endl;
-//     // }
+//     if(same == (rows*columns)){
+//       cout << "WORLD HAS NOW STABILIZED! PRESS 'ENTER' TO EXIT PROGRAM: " << endl;
+//       cin.get();
+//       while(cin.get()!= '\n'){
+//         cin.get();
+//         cout<< "PRESS ENTER TO EXIT" << endl;
+//       }
+//       return false;
+//     }else{
+//       return true;
+//     }
 //
-//   }else if(printOption == "3"){
-//     ofstream writeFile;
-//     writeFile.open(filename, ios::in);
-//     //writeFile << "Generation: " << genCount << endl;
+//   }else if(printOption == "2"){
+//     //string temp;
+//     cout << "Press 'Enter' to continue printing: " << endl;
+//     char temp = 'x';
+//     while (temp != '\n'){
+//       cin.get(temp);
+//     }
+//
+//     // while(cin.get()!= '\n'){
+//     //   cin.get();
+//     // }
+//     cout << "Generation: " << genCount << endl;
+//     int same = 0;
 //     for(int i = 0; i< rows; ++i){
 //       for(int j = 0; j < columns; ++j){
+//         cout << board[i][j];
+//         if(board[i][j] == '-'){
+//           same++;
+//         }
+//       }
+//       cout << endl;
+//     }
+//
+//     if(same == (rows*columns)){
+//       cout << "WORLD HAS NOW STABILIZED! PRESS 'ENTER' TO EXIT PROGRAM: " << endl;
+//       cin.get();
+//       while(cin.get()!= '\n'){
+//         cin.get();
+//         cout<< "PRESS ENTER TO EXIT" << endl;
+//       }
+//       return false;
+//     }else{
+//       return true;
+//     }
+//
+//   }else if(printOption == "3"){
+//     int same = 0;
+//     //writeFile.open(filename);
+//     if(fileCounter == true){
+//     writeFile << "Generation: " << genCount << endl;
+//     for(int i = 0; i < rows; ++i){
+//       for(int j = 0; j < columns; ++j){
 //         writeFile << board[i][j];
+//         if(board[i][j] == '-' ){
+//           same++;
+//         }
 //       }
 //       writeFile << endl;
 //     }
+//   }else{
 //     writeFile.close();
+//   }
+//
+//     if(same == (rows*columns)){
+//       cout << "WORLD HAS BEEN PRINTED TO TEXT FILE! PRESS 'ENTER' TO EXIT PROGRAM: " << endl;
+//       cin.get();
+//       while(cin.get()!= '\n'){
+//         cin.get();
+//         cout<< "PRESS ENTER TO EXIT" << endl;
+//       }
+//       return false;
+//
+//     }else{
+//       return true;
+//     }
+//
 //   }else{
 //     //nothign
 //   }
@@ -158,6 +241,7 @@
 //   int totalCells = 0;
 //   totalCells = height*width;
 //   double population = 0.0;
+//   bool fileCounter = true;
 //   population = ceil(popDensity*totalCells);
 //   //cout << population << endl;
 //
@@ -192,13 +276,17 @@
 //
 // void Life::fileWorld(string filename){
 //   ifstream readFile;
-//   readFile.open(filename, ios::in);
 //   int lineNum = 0;
 //   int row;
 //   int column;
 //   char ch;
 //   char** gridBoard;
-//
+//   readFile.open(filename, ios::in);
+//   while(!readFile.is_open()){
+//     cout << "ERROR: FILE NOT OPENED! Try entering an applicable '.txt' file: " << endl;
+//     cin >> filename;
+//     readFile.open(filename, ios::in);
+//   }
 //   while(!readFile.eof()){
 //     string str;
 //     getline(readFile, str);
@@ -247,22 +335,16 @@
 //     }
 //     ignore++;
 //   }
-//
-//   // cout << "Generation: " << genCount << endl;
-//   // for(int i = 0; i < row; ++i){
-//   //   for(int j = 0; j < column; ++j){
-//   //     cout << gridBoard[i][j];
-//   //   }
-//   //   cout << endl;
-//   // }
-//
 //   chooseMode(row, column, gridBoard);
 //
 //
 // }//end of fileWorld method
 //
 // void Life::classicMode(int row, int column, char**& currGen){
+//   int infinity = 1000;
+//   int infinityCounter = 0;
 //   genCount = 0;
+//   bool fileCounter = true;
 //   char **nextGen = new char*[row];
 //   for(int i = 0; i < row; ++i){
 //     nextGen[i] = new char[column];
@@ -274,46 +356,22 @@
 //       for(int j = 0; j < column; ++j){
 //         int cells = 0;
 //         //cout << currGen[i][j] << "   " << i << "   " << j <<  "   " ;
-//         if(i!= 0 && currGen[i-1][j] == 'X'){
+//         if(i!= 0 && currGen[i-1][j] == 'X')
 //           ++cells;
-//           //cout << "added 1  ";
-//         }
-//
-//         if(i!=0 && j!=0 && currGen[i-1][j-1] == 'X'){
+//         if(i!=0 && j!=0 && currGen[i-1][j-1] == 'X')
 //           ++cells;
-//           //cout << "added 2  ";
-//         }
-//
-//         if(i!=0 && j!=(column-1) && currGen[i-1][j+1] == 'X'){
+//         if(i!=0 && j!=(column-1) && currGen[i-1][j+1] == 'X')
 //           cells++;
-//           //cout << "added 3  ";
-//         }
-//
-//         if(j!=0 && currGen[i][j-1] == 'X'){
+//         if(j!=0 && currGen[i][j-1] == 'X')
 //           ++cells;
-//         //cout << "added 4  ";
-//         }
-//
-//         if( (j!=column-1) && currGen[i][j+1] == 'X'){
+//         if( (j!=column-1) && currGen[i][j+1] == 'X')
 //           ++cells;
-//           //cout << "added 5  ";
-//         }
-//
-//         if( (i!= (row-1)) && j !=0 && currGen[i+1][j-1] == 'X'){
+//         if( (i!= (row-1)) && j !=0 && currGen[i+1][j-1] == 'X')
 //           ++cells;
-//           //cout << "added 6  ";
-//         }
-//
-//         if( i!= row-1 && currGen[i+1][j] == 'X'){
+//         if( i!= row-1 && currGen[i+1][j] == 'X')
 //           ++cells;
-//           //cout << "added 7  ";
-//         }
-//
-//         if( i!= row-1 && j!= column && currGen[i+1][j+1] == 'X' ){
+//         if( i!= row-1 && j!= column && currGen[i+1][j+1] == 'X' )
 //           ++cells;
-//           //cout << "added 8  ";
-//         }
-//         //cout << i << ", " << j << "  " << cells << endl;
 //
 //         if(cells <= 1){
 //           nextGen[i][j] = '-';
@@ -335,7 +393,17 @@
 //
 //     if(runningSimulation){
 //
-//       if(genCount == 0){
+//       if(printOption == "3" && genCount ==0){
+//         //cout << filename << endl;
+//         writeFile.open(filename);
+//         writeFile << "Generation: " << genCount << endl;
+//         for(int i = 0; i< row; ++i){
+//           for(int j = 0; j < column; ++j){
+//             writeFile << currGen[i][j];
+//           }
+//           writeFile << endl;
+//         }
+//       }else if(genCount == 0){
 //         //cout << "in if statemnet " << endl;
 //         cout << "Generation: " << genCount << endl;
 //
@@ -348,39 +416,66 @@
 //           cout << endl;
 //         }
 //
-//         genCount++;
-//
-//         print(row, column, nextGen, genCount, printOption);
-//         //set currGen = nextGen, so the next time it runs, it will update the nextGen
-//         for(int i = 0; i< row; ++i){
-//           for(int j = 0; j < column; ++j){
-//             currGen[i][j] = nextGen[i][j];
-//             }
+//         if(printOption == "2"){
+//           //string temp;
+//           //cout << "Press 'Enter' to continue printing: " << endl;
+//           char temp = 'x';
+//           while (temp != '\n'){
+//             cin.get(temp);
+//           }
 //         }
 //
 //
-//       } else{
-//         //cout << "in else statemnet " << endl;
-//         genCount++;
-//
-//         print(row, column, nextGen, genCount, printOption);
-//         for(int i = 0; i< row; ++i){
-//           for(int j = 0; j < column; ++j){
-//             currGen[i][j] = nextGen[i][j];
-//             }
-//         }
 //       }
+//         genCount++;
+//         int genAreSame = 0;
+//         for(int i = 0; i< row; ++i){
+//           for(int j = 0; j < column; ++j){
+//             if(currGen[i][j] == nextGen[i][j]){
+//               genAreSame++;
+//             }
+//           }
+//           //cout << endl;
+//         }
+//
+//         if(genAreSame == (row*column)){
+//           infinityCounter++;
+//
+//         }
+//
+//         runningSimulation = print(row, column, nextGen, genCount, printOption, fileCounter);
+//         //set currGen = nextGen, so the next time it runs, it will update the nextGen
+//
+//         // int genAreSAme
+//
+//         for(int i = 0; i< row; ++i){
+//           for(int j = 0; j < column; ++j){
+//             currGen[i][j] = nextGen[i][j];
+//             }
+//         }
+//         if(infinityCounter == infinity){
+//           cout << "STOPPED AFTER PRINTING 1000 GENERATIONS FROM WHEN GRIDS STABILIZED :)" << endl;
+//           runningSimulation = false;
+//         }
 //
 //     }
-//     // genCount++;
+//
 //
 //   }// end of while loop
+//   if(writeFile.is_open()){
+//     writeFile.close();
+//   }
+//
 //
 //
 //
 // }//end of classic mode
 //
 // void Life::doughnutMode(int row, int column, char** currGen){
+//   int infinity = 1000;
+//   int infinityCounter = 0;
+//   bool fileCounter = true;
+//
 //   //cout << "in doughnut mode " << endl;
 //   char **nextGen = new char*[row];
 //   for(int i = 0; i < row; ++i){
@@ -441,22 +536,22 @@
 //           //cout << "middle" << endl;
 //           if(i!= 0 && currGen[i-1][j] == 'X')
 //             ++cells;
-//           if( i!=0 && j!=0 && currGen[i-1][j-1] == 'X')
+//           if(i!=0 && j!=0 && currGen[i-1][j-1] == 'X')
 //             ++cells;
-//           if(i!=0 && j!= column && currGen[i-1][j+1] == 'X')
+//           if(i!=0 && j!=(column-1) && currGen[i-1][j+1] == 'X')
 //             cells++;
 //           if(j!=0 && currGen[i][j-1] == 'X')
 //             ++cells;
-//           if(j!=column && currGen[i][j+1] == 'X')
+//           if( (j!=column-1) && currGen[i][j+1] == 'X')
 //             ++cells;
-//           if( i!= row-1 && column != 0 && currGen[i+1][j-1] == 'X')
+//           if( (i!= (row-1)) && j !=0 && currGen[i+1][j-1] == 'X')
 //             ++cells;
 //           if( i!= row-1 && currGen[i+1][j] == 'X')
 //             ++cells;
 //           if( i!= row-1 && j!= column && currGen[i+1][j+1] == 'X' )
 //             ++cells;
 //         }else if(i == (row-1) && j ==0){
-//         //  cout  << "bottom right corner" << endl;
+//         //  cout  << "bottom left corner" << endl;
 //           if(currGen[i-1][j] == 'X')
 //             cells++;
 //           if(currGen[i][j+1] == 'X')
@@ -474,7 +569,7 @@
 //           if(currGen[i-1][column-1] == 'X')
 //             cells++;
 //         }else if(i == (row-1) && j == (column-1)){
-//         //  cout  << "bottom left corner" << endl;
+//         //  cout  << "bottom right corner" << endl;
 //           if(currGen[i][j-1] == 'X')
 //             cells++;
 //           if(currGen[i-1][j] == 'X')
@@ -546,7 +641,7 @@
 //             cells++;
 //           if(currGen[i+1][0] == 'X')
 //             cells++;
-//         }else if(i = 0){
+//         }else if(i == 0){
 //           if(currGen[i+1][j] == 'X')
 //             cells++;
 //           if(currGen[i][j+1] == 'X')
@@ -586,53 +681,91 @@
 //       //cout << endl;
 //     }//end of first for loop
 //
-//     if(runningSimulation){
-//       cout << "Generation: " << genCount << endl;
-//       if(genCount == 0){
-//         for(int i = 0; i< row; ++i){
-//           for(int j = 0; j < column; ++j){
-//             cout << currGen[i][j];
+//
+//         if(runningSimulation){
+//           if(printOption == "3" && genCount ==0){
+//             //cout << filename << endl;
+//             writeFile.open(filename);
+//             writeFile << "Generation: " << genCount << endl;
+//             for(int i = 0; i< row; ++i){
+//               for(int j = 0; j < column; ++j){
+//                 writeFile << currGen[i][j];
+//               }
+//               writeFile << endl;
 //             }
-//           cout << endl;
+//           }else if(genCount == 0){
+//             //cout << "in if statemnet " << endl;
+//             cout << "Generation: " << genCount << endl;
+//
+//           //print arrayclear
+//             for(int i = 0; i< row; ++i){
+//               for(int j = 0; j < column; ++j){
+//                 // MAYBE THIS PRINT STATEMENT
+//                 cout << currGen[i][j];
+//                 }
+//               cout << endl;
+//             }
+//
+//             if(printOption == "2"){
+//               //string temp;
+//               //cout << "Press 'Enter' to continue printing: " << endl;
+//               char temp = 'x';
+//               while (temp != '\n'){
+//                 cin.get(temp);
+//               }
+//             }
+//           }
+//             genCount++;
+//
+//             int genAreSame = 0;
+//             for(int i = 0; i< row; ++i){
+//               for(int j = 0; j < column; ++j){
+//                 if(currGen[i][j] == nextGen[i][j]){
+//                   genAreSame++;
+//                 }
+//               }
+//               //cout << endl;
+//             }
+//
+//             if(genAreSame == (row*column)){
+//               infinityCounter++;
+//
+//             }
+//             runningSimulation = print(row, column, nextGen, genCount, printOption, fileCounter);
+//             //set currGen = nextGen, so the next time it runs, it will update the nextGen
+//             for(int i = 0; i< row; ++i){
+//               for(int j = 0; j < column; ++j){
+//                 currGen[i][j] = nextGen[i][j];
+//                 }
+//             }
+//
+//             if(infinityCounter == infinity){
+//               cout << "STOPPED AFTER PRINTING 1000 GENERATIONS FROM WHEN GRIDS STABILIZED :)" << endl;
+//               runningSimulation = false;
+//             }
+//
 //         }
 //
-//         print(row, column, currGen, genCount, printOption);
-//
-//         //set currGen = nextGen, so the next time it runs, it will update the nextGen
-//         for(int i = 0; i< row; ++i){
-//           for(int j = 0; j < column; ++j){
-//             currGen[i][j] = nextGen[i][j];
-//             }
-//         }
-//
-//       } else{
-//         for(int i = 0; i< row; ++i){
-//           for(int j = 0; j < column; ++j){
-//             currGen[i][j] = nextGen[i][j];
-//             cout << currGen[i][j];
-//             }
-//           cout << endl;
-//         }
-//         print(row, column, currGen, genCount, printOption);
-//       }
-//
-//     }
-//
-//     genCount++;
-//
+//   }//end of while loop
+//   if(writeFile.is_open()){
+//     writeFile.close();
 //   }
+//
 //
 // }//end of doughnutMode()
 //
 // void Life::mirrorMode(int row, int column, char** currGen){
 //   genCount = 0;
+//   int infinity = 1000;
+//   int infinityCounter = 0;
+//   bool runningSimulation = true;
+//   bool fileCounter = true;
 //   //cout << "in mirror mode " << endl;
 //   char **nextGen = new char*[row];
 //   for(int i = 0; i < row; ++i){
 //     nextGen[i] = new char[column];
 //   }
 //
-//   bool runningSimulation = true;
 //   while(runningSimulation){
 //   for(int i = 0; i < row; ++i){
 //     for(int j = 0; j < column; ++j){
@@ -664,7 +797,6 @@
 //         //bottom left corner
 //       }else if(i == (row-1) && j == 0){
 //         //cout << "bottom left corner " << endl;
-//
 //         if(currGen[i][j] == 'X')
 //           cells+=3;
 //         if(currGen[i-1][j] == 'X')
@@ -705,7 +837,7 @@
 //       }else if(i == 0){
 //         //cout << "top row " << endl;
 //         if(currGen[i][j] == 'X')
-//           cells+=2;
+//           cells++;
 //         if(currGen[i][j-1] == 'X')
 //           cells+=2;
 //         if(currGen[i][j+1] == 'X')
@@ -719,7 +851,7 @@
 //       } else if(j == 0){
 //         //cout << "first column " << endl;
 //         if(currGen[i][j] == 'X')
-//           cells+=2;
+//           cells++;
 //         if(currGen[i-1][j] == 'X')
 //           cells+=2;
 //         if(currGen[i+1][j] == 'X')
@@ -733,7 +865,7 @@
 //       }else if(i == (row-1)){
 //         //cout << "last row " << endl;
 //         if(currGen[i][j] == 'X')
-//           cells+=2;
+//           cells++;
 //         if(currGen[i][j+1] == 'X')
 //           cells+=2;
 //         if(currGen[i][j-1] == 'X')
@@ -747,7 +879,7 @@
 //       }else if(j == (column-1)){
 //         //cout << "last column " << endl;
 //         if(currGen[i][j] == 'X')
-//           cells+=2;
+//           cells++;
 //         if(currGen[i+1][j] == 'X')
 //           cells+=2;
 //         if(currGen[i-1][j] == 'X')
@@ -781,40 +913,81 @@
 //     //cout << endl;
 //   }//first for loop
 //
-//   if(runningSimulation){
-//     cout << "Generation: " << genCount << endl;
-//     if(genCount == 0){
-//       for(int i = 0; i< row; ++i){
-//         for(int j = 0; j < column; ++j){
-//           cout << currGen[i][j];
+//       if(runningSimulation){
+//         if(printOption == "3" && genCount ==0){
+//           //cout << filename << endl;
+//           writeFile.open(filename);
+//           writeFile << "Generation: " << genCount << endl;
+//           for(int i = 0; i< row; ++i){
+//             for(int j = 0; j < column; ++j){
+//               writeFile << currGen[i][j];
+//             }
+//             writeFile << endl;
 //           }
-//         cout << endl;
+//         }else if(genCount == 0){
+//           //cout << "in if statemnet " << endl;
+//           cout << "Generation: " << genCount << endl;
+//
+//         //print array
+//           for(int i = 0; i< row; ++i){
+//             for(int j = 0; j < column; ++j){
+//               // MAYBE THIS PRINT STATEMENT
+//               cout << currGen[i][j];
+//               }
+//             cout << endl;
+//           }
+//
+//           if(printOption == "2"){
+//             //string temp;
+//             //cout << "Press 'Enter' to continue printing: " << endl;
+//             char temp = 'x';
+//             while (temp != '\n'){
+//               cin.get(temp);
+//             }
+//           }
+//         }
+//           genCount++;
+//
+//           int genAreSame = 0;
+//           for(int i = 0; i< row; ++i){
+//             for(int j = 0; j < column; ++j){
+//               if(currGen[i][j] == nextGen[i][j]){
+//                 genAreSame++;
+//               }
+//             }
+//             //cout << endl;
+//           }
+//
+//           if(genAreSame == (row*column)){
+//             infinityCounter++;
+//           }
+//
+//
+//           runningSimulation = print(row, column, nextGen, genCount, printOption, fileCounter);
+//           //set currGen = nextGen, so the next time it runs, it will update the nextGen
+//
+//
+//           for(int i = 0; i< row; ++i){
+//             for(int j = 0; j < column; ++j){
+//               currGen[i][j] = nextGen[i][j];
+//               }
+//           }
+//
+//           if(infinityCounter == infinity){
+//             cout << "STOPPED AFTER PRINTING 1000 GENERATIONS FROM WHEN GRIDS STABILIZED :)" << endl;
+//             runningSimulation = false;
+//             if(printOption == "3"){
+//               bool fileCounter = false;
+//             }
+//
+//           }
+//
+//
 //       }
 //
-//       print(row, column, currGen, genCount, printOption);
-//
-//       //set currGen = nextGen, so the next time it runs, it will update the nextGen
-//       for(int i = 0; i< row; ++i){
-//         for(int j = 0; j < column; ++j){
-//           currGen[i][j] = nextGen[i][j];
-//           }
-//       }
-//
-//     } else{
-//       for(int i = 0; i< row; ++i){
-//         for(int j = 0; j < column; ++j){
-//           currGen[i][j] = nextGen[i][j];
-//           cout << currGen[i][j];
-//           }
-//         cout << endl;
-//       }
-//       print(row, column, currGen, genCount, printOption);
-//     }
-//
-//   }
-//
-//   genCount++;
-//
+// }//end of while loop
+// if(writeFile.is_open()){
+//   writeFile.close();
 // }
 //
 //

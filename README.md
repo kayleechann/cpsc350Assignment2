@@ -27,6 +27,10 @@ Assignment 2 <br/>
   - http://www.cplusplus.com/forum/beginner/30644/
 - Rounding numbers
   - http://www.cplusplus.com/reference/cmath/ceil/
+- Validating user input as double
+  - https://stackoverflow.com/questions/3273993/how-do-i-validate-user-input-as-a-double-in-c
+- Avoid char input when program expects integer
+  - https://stackoverflow.com/questions/11523569/how-can-i-avoid-char-input-for-an-int-variable
 - My dad helped me debug (I was missing a second equal sign for the assignment operator)
 
 5. Instructions for running assignment:
