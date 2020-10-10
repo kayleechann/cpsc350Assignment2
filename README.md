@@ -12,9 +12,7 @@ Assignment 2 <br/>
 - assign2.cpp
 - main.cpp
 
-3.
-If user selects mirror mode, wants to print to a text file, and simulation is infinite, the file doesn't stop after 1000 generations.
-
+3.If user selects mirror mode, wants to print to a text file, and simulation is infinite, the file doesn't stop after 1000 generations.
 
 4. References
 - Used to figure out how to press enter key to continue program
